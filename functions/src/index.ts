@@ -34,7 +34,7 @@ export const fileList = functions.region('europe-west2').https.onRequest((reques
 
             });
 
-        promise.then( (fileList) => response.send(fileList) );
+        promise.then( (fileList) => response.json({list:fileList}) );
         
     })
 
@@ -56,9 +56,10 @@ export const fileUrl = functions.region('europe-west2').https.onRequest((request
     tomorrow.setDate(tomorrow.getDate() + 1);
 
     File.getSignedUrl({ action: 'read', expires: tomorrow })
-    .then( fileURL =>  response.send(fileURL) )
+    .then( fileURL =>  response.send(fileURL[0]) )
     .catch( error =>  response.send(error) )
 
 });
+
 
 
