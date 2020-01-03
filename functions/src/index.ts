@@ -48,16 +48,26 @@ export const fileList = functions.region('europe-west2').https.onRequest((reques
 
 export const fileUrl = functions.region('europe-west2').https.onRequest((request, response) => {
 
-    console.log(request.query.filename);
+    console.log(request.query);
     
-    const File = admin.storage().bucket('gs://gltf-storage.appspot.com').file(request.query.filename)
+    if ( request.query.hasOwnProperty('filename'))  {
+        
+        const File = admin.storage().bucket('gs://gltf-storage.appspot.com').file(request.query.filename)
     
-    const tomorrow = new Date();
-    tomorrow.setDate(tomorrow.getDate() + 1);
+        const tomorrow = new Date();
+        tomorrow.setDate(tomorrow.getDate() + 1);
 
-    File.getSignedUrl({ action: 'read', expires: tomorrow })
-    .then( fileURL =>  response.send(fileURL[0]) )
-    .catch( error =>  response.send(error) )
+        File.getSignedUrl({ action: 'read', expires: tomorrow })
+        .then( fileURL =>  response.send(fileURL[0]) )
+        .catch( error =>  response.send(error) )
+
+    }else{
+
+        response.send("you need to specify a filename; for example ==> https://europe-west2-gltf-storage.cloudfunctions.net/fileUrl?filename=model-1577214018.gltf")
+    
+    };
+
+
 
 });
 
